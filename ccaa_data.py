@@ -110,6 +110,7 @@ params = {
     "start_date": start_date.isoformat(),
     "end_date": end_date.isoformat(),
     "page": page,
+    "publisher": publisher,
 }
 if query:
     params["query"] = query
