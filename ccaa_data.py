@@ -291,12 +291,13 @@ polar_df = (
     .reset_index()
 )
 
-
 # Footer
 with st.expander("About this project"):
     st.markdown(
         """
-    This dashboard is part of the Chinese Commercial Advertisement Archive (CCAA). It showcases digital images and metadata 
-    of commercial ephemera preserved by historical institutions. Powered by Streamlit and Plotly.
-    """
+        **About this project**  
+        This dashboard is part of the *Positions Press* initiative and is shared under the  
+        [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).  
+        Content is made publicly accessible to support scholarly research and engagement.
+        """
     )
