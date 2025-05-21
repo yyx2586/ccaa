@@ -144,7 +144,7 @@ with st.spinner("Loading catalog..."):
                 product = item.get("dc_subject_product", "")
                 company = item.get("chao_company_name", "")
                 agency = limit_words(item.get("chao_productagency", ""), 15)
-                publisher = item.get("dc_contributor_publisher", "")
+                publisher = item.get("publisher", "")
                 location = item.get("dc_publishing_location", "")
                 full_text = limit_words(item.get("dc_description_fulltext", ""), 20)
                 issued = parse_mongo_date(item.get("dc_date_issued", {}))
