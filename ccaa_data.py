@@ -51,10 +51,11 @@ if "modal_image" not in st.session_state:
     st.session_state.modal_image = None
 if "modal_title" not in st.session_state:
     st.session_state.modal_title = None
-
 with st.container():
     col1, col2, col3, col4 = st.columns([2, 2, 2, 2])
+
     query = col1.text_input("Search", "")
+
     start_date = col2.date_input(
         "Start Date",
         datetime.date(1907, 3, 9),
@@ -68,7 +69,21 @@ with st.container():
         min_value=datetime.date(1901, 1, 1),
         max_value=datetime.date(1938, 12, 31),
     )
+
     page = col4.number_input("Page", min_value=1, value=1, step=1)
+
+    publisher = st.selectbox(
+        "Select Publisher (optional)",
+        options=[
+            "",
+            "Ta Kung Pao [大公报]",
+            "Press of Hankow Times [汉口中西报社]",
+            "Press of Sheng-ching Shih-pao [盛京时报社]",
+            "Press of Yuet Wa Po [越华报社]",
+        ],
+        index=0,
+        help="Filter by specific newspaper publisher",
+    )
 
 
 def parse_mongo_date(obj):
