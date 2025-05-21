@@ -19,7 +19,11 @@ API_URL = "https://9pphdnzmo8.execute-api.us-east-1.amazonaws.com/Prod"
 VIEWER_API = "https://9pphdnzmo8.execute-api.us-east-1.amazonaws.com/Prod"
 RESULTS_PER_PAGE = 10
 
-st.set_page_config(page_title="Historical Ad Archive", layout="wide", page_icon="📰")
+st.set_page_config(
+    page_title="Positions Press - Chinese Commercial Advertisement Archive",
+    layout="wide",
+    page_icon="📰",
+)
 
 # Header
 t1, t2 = st.columns((0.1, 1))
