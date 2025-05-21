@@ -53,7 +53,7 @@ with st.container():
     query = col1.text_input("Search", "")
     start_date = col2.date_input(
         "Start Date",
-        datetime.date(1901, 1, 1),
+        datetime.date(1907, 3, 9),
         min_value=datetime.date(1901, 1, 1),
         max_value=datetime.date(1938, 12, 31),
     )
