@@ -182,13 +182,13 @@ with st.spinner("Loading catalog..."):
                     f"""
             <tr>
             <td style="padding: 8px; border: 1px solid #ccc;">{img_tag}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{publisher}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{issued}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{title}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{nation}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{company}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{brand}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{product}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{publisher.replace('\n', ' ')}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{issued.replace('\n', ' ')}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{title.replace('\n', ' ')}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{nation.replace('\n', ' ')}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{company.replace('\n', ' ')}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{brand.replace('\n', ' ')}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{product.replace('\n', ' ')}</td>
             <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{full_text.replace('\n', ' ')}</td>
             </tr>
             """
