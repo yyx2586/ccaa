@@ -201,13 +201,18 @@ with st.spinner("Loading catalog..."):
     except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
 
-# Universe
-st.subheader("🌐 Embedding Space")
-components.iframe(
-    "https://projector.tensorflow.org/?config=https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/tensorboard_config_sprite.json",
-    height=500,
-)
 
+# Universe
+st.subheader("🌐 Advertisement Embedding Universe")
+st.markdown(
+    """
+    This section visualizes the advertisement embedding universe using TensorBoard Projector.
+
+    The embeddings are generated using a model trained on the advertisement data.
+    
+    [TensorBoard Projector](https://projector.tensorflow.org/?config=https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/tensorboard_config_sprite.json).
+    """
+)
 
 # Plotting
 st.subheader("📊 Advertisement Statistics")
@@ -318,7 +323,6 @@ polar_df = (
     .unstack(fill_value=0)
     .reset_index()
 )
-
 
 # Footer
 with st.expander("About this project"):
