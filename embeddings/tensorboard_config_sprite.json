@@ -1,0 +1,21 @@
+{
+  "embeddings": [
+    {
+      "tensorName": "CCAA Image Embedding",
+      "tensorShape": [
+        1000,
+        256
+      ],
+      "tensorPath": "https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/img_embedding.tsv",
+      "metadataPath": "https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/metadata.tsv",
+      "bookmarksPath": "https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/sprite_image_bookmark.txt",
+      "sprite": {
+        "imagePath": "https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/sprite.png",
+        "singleImageDim": [
+          32,
+          32
+        ]
+      }
+    }
+  ]
+}

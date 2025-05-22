@@ -4,7 +4,7 @@ import plotly.express as px
 from PIL import Image
 import base64
 from io import BytesIO
-
+import streamlit.components.v1 as components
 
 import streamlit as st
 import pandas as pd
@@ -201,6 +201,14 @@ with st.spinner("Loading catalog..."):
     except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
 
+# Universe
+st.subheader("🌐 Embedding Space")
+components.iframe(
+    "https://projector.tensorflow.org/?config=https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/tensorboard_config_sprite.json",
+    height=500,
+)
+
+
 # Plotting
 st.subheader("📊 Advertisement Statistics")
 
@@ -310,6 +318,7 @@ polar_df = (
     .unstack(fill_value=0)
     .reset_index()
 )
+
 
 # Footer
 with st.expander("About this project"):
