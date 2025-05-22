@@ -96,7 +96,7 @@ def parse_mongo_date(obj):
         return ""
 
 
-def limit_words(text, limit=20):
+def limit_words(text, limit=100):
     if not text:
         return ""
     import re
@@ -139,14 +139,14 @@ with st.spinner("Loading catalog..."):
             <thead>
             <tr style="background-color: #f2f2f2;">
             <th style="padding: 8px; border: 1px solid #ccc;">Thumbnail</th>
+            <th style="padding: 8px; border: 1px solid #ccc;">Publisher</th>
+            <th style="padding: 8px; border: 1px solid #ccc;">Date</th>
+            <th style="padding: 8px; border: 1px solid #ccc;">Volume</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Title</th>
+            <th style="padding: 8px; border: 1px solid #ccc;">Nation</th>
+            <th style="padding: 8px; border: 1px solid #ccc;">Company</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Brand</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Product</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Company</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Date</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Agency</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Publisher</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Location</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Text Preview</th>
             </tr>
             </thead>
@@ -154,16 +154,18 @@ with st.spinner("Loading catalog..."):
             """
             )
 
+            # ["publisher", "dc_date_issued", "dc_citation_issuenumber", "dc_title", "dc_subject_brand", "dc_subject_product", "dc_description_fulltext"]
+
             for i, item in enumerate(results):
+                publisher = item.get("publisher", "")
+                issued = parse_mongo_date(item.get("dc_date_issued", {}))
+                issued_vol = parse_mongo_date(item.get("dc_citation_issuenumber", {}))
                 title = item.get("dc_title", "")
                 brand = item.get("dc_subject_brand", "")
                 product = item.get("dc_subject_product", "")
+                full_text = limit_words(item.get("dc_description_fulltext", ""), 500)
+                nation = limit_words(item.get("chao_company_nation", ""))
                 company = item.get("chao_company_name", "")
-                agency = limit_words(item.get("chao_productagency", ""), 15)
-                publisher = item.get("publisher", "")
-                location = item.get("dc_publishing_location", "")
-                full_text = limit_words(item.get("dc_description_fulltext", ""), 20)
-                issued = parse_mongo_date(item.get("dc_date_issued", {}))
                 thumb_b64 = item.get("thumbnail_base64", "")
                 s3_url = item.get("s3_url_img", "")
 
@@ -181,15 +183,15 @@ with st.spinner("Loading catalog..."):
                     f"""
             <tr>
             <td style="padding: 8px; border: 1px solid #ccc;">{img_tag}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{title}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{brand}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{product}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{company}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{issued}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{agency}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{publisher}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{location}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{full_text}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{publisher}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{issued}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{issued_vol}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{title}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{nation}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{company}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{brand}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{product}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{full_text}</td>
             </tr>
             """
                 )
