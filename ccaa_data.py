@@ -5,7 +5,7 @@ from PIL import Image
 import base64
 from io import BytesIO
 import streamlit.components.v1 as components
-
+import html
 import streamlit as st
 import pandas as pd
 import requests
@@ -101,7 +101,7 @@ def limit_words(text, limit=100):
         return ""
     import re
 
-    segments = re.findall(r"[\u4e00-\u9fa5]|[^\s\u4e00-\u9fa5]+", str(text))
+    segments = re.findall(r"[\u4e00-\u9fa5]+", str(text))
     return "".join(segments[:limit]) + ("..." if len(segments) > limit else "")
 
 
@@ -141,7 +141,6 @@ with st.spinner("Loading catalog..."):
             <th style="padding: 8px; border: 1px solid #ccc;">Thumbnail</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Publisher</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Date</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Volume</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Title</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Nation</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Company</th>
@@ -163,8 +162,8 @@ with st.spinner("Loading catalog..."):
                 title = item.get("dc_title", "")
                 brand = item.get("dc_subject_brand", "")
                 product = item.get("dc_subject_product", "")
-                full_text = limit_words(item.get("dc_description_fulltext", ""), 500)
-                nation = limit_words(item.get("chao_company_nation", ""))
+                full_text = item.get("dc_description_fulltext", "")
+                nation = item.get("chao_company_nation", "")
                 company = item.get("chao_company_name", "")
                 thumb_b64 = item.get("thumbnail_base64", "")
                 s3_url = item.get("s3_url_img", "")
@@ -183,15 +182,14 @@ with st.spinner("Loading catalog..."):
                     f"""
             <tr>
             <td style="padding: 8px; border: 1px solid #ccc;">{img_tag}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{publisher}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{issued}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{issued_vol}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{title}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{nation}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{company}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{brand}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{product}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{full_text}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{publisher}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{issued}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{title}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{nation}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{company}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{brand}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{product}</td>
+            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{full_text.replace('\n', ' ')}</td>
             </tr>
             """
                 )
