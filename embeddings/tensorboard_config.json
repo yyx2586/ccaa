@@ -4,7 +4,7 @@
       "tensorName": "CCAA Image Embedding",
       "tensorShape": [
         256,
-        50
+        256
       ],
       "tensorPath": "https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/img_embedding.tsv",
       "metadataPath": "https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/metadata.tsv"
