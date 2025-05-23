@@ -13,6 +13,7 @@ import base64
 import datetime
 from io import BytesIO
 from PIL import Image
+from plotly.graph_objects import Sankey
 
 # --- Settings
 API_URL = "https://9pphdnzmo8.execute-api.us-east-1.amazonaws.com/Prod"
@@ -60,14 +61,14 @@ with st.container():
         "Start Date",
         datetime.date(1907, 3, 9),
         min_value=datetime.date(1901, 1, 1),
-        max_value=datetime.date(1938, 12, 31),
+        max_value=datetime.date(1940, 12, 31),
     )
 
     end_date = col3.date_input(
         "End Date",
         datetime.date(1938, 12, 31),
         min_value=datetime.date(1901, 1, 1),
-        max_value=datetime.date(1938, 12, 31),
+        max_value=datetime.date(1940, 12, 31),
     )
 
     page = col4.number_input("Page", min_value=1, value=1, step=1)
@@ -88,8 +89,8 @@ with st.container():
 
 def parse_mongo_date(obj):
     try:
-        date = datetime.datetime.utcfromtimestamp(
-            int(obj["$date"]["$numberLong"]) / 1000
+        date = datetime.datetime.fromtimestamp(
+            int(obj["$date"]["$numberLong"]) / 1000, tz=datetime.timezone.utc
         )
         return date.strftime("%Y-%m-%d")
     except:
@@ -156,15 +157,19 @@ with st.spinner("Loading catalog..."):
             # ["publisher", "dc_date_issued", "dc_citation_issuenumber", "dc_title", "dc_subject_brand", "dc_subject_product", "dc_description_fulltext"]
 
             for i, item in enumerate(results):
-                publisher = item.get("publisher", "")
-                issued = parse_mongo_date(item.get("dc_date_issued", {}))
-                issued_vol = parse_mongo_date(item.get("dc_citation_issuenumber", {}))
-                title = item.get("dc_title", "")
-                brand = item.get("dc_subject_brand", "")
-                product = item.get("dc_subject_product", "")
-                full_text = item.get("dc_description_fulltext", "")
-                nation = item.get("chao_company_nation", "")
-                company = item.get("chao_company_name", "")
+                publisher = item.get("publisher", "").replace("\n", " ")
+                issued = parse_mongo_date(item.get("dc_date_issued", {})).replace(
+                    "\n", " "
+                )
+                issued_vol = parse_mongo_date(
+                    item.get("dc_citation_issuenumber", {})
+                ).replace("\n", " ")
+                title = item.get("dc_title", "").replace("\n", " ")
+                brand = item.get("dc_subject_brand", "").replace("\n", " ")
+                product = item.get("dc_subject_product", "").replace("\n", " ")
+                full_text = item.get("dc_description_fulltext", "").replace("\n", " ")
+                nation = item.get("chao_company_nation", "").replace("\n", " ")
+                company = item.get("chao_company_name", "").replace("\n", " ")
                 thumb_b64 = item.get("thumbnail_base64", "")
                 s3_url = item.get("s3_url_img", "")
 
@@ -182,14 +187,19 @@ with st.spinner("Loading catalog..."):
                     f"""
             <tr>
             <td style="padding: 8px; border: 1px solid #ccc;">{img_tag}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{publisher.replace('\n', ' ')}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{issued.replace('\n', ' ')}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{title.replace('\n', ' ')}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{nation.replace('\n', ' ')}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{company.replace('\n', ' ')}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{brand.replace('\n', ' ')}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{product.replace('\n', ' ')}</td>
-            <td style="padding: 8px; border: 1px solid #ccc; font-size: 10px;">{full_text.replace('\n', ' ')}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{publisher}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{issued}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{title}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{nation}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{company}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{brand}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{product}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">
+            <details>
+            <summary style="cursor:pointer;">{full_text[:100]}[click_to_expand]</summary>
+            {full_text}
+            </details>
+            </td>
             </tr>
             """
                 )
@@ -215,50 +225,83 @@ st.markdown(
 )
 
 # Plotting
-st.subheader("📊 Advertisement Statistics")
-
-# Plot by year
+st.subheader("📊 Advertisement Statistics Analysis")
+# --- Prepare data ---
 if df["dc_date_issued"].notnull().any():
-    df["year"] = df["dc_date_issued"].dt.year
+    df["year"] = pd.to_datetime(df["dc_date_issued"], errors="coerce").dt.year
     fig1 = px.histogram(df, x="year", title="Number of Advertisements per Year")
-    st.plotly_chart(fig1, use_container_width=True)
 
-# Brand frequency
 top_brands = df["dc_subject_brand"].value_counts().nlargest(30)
 fig2 = px.bar(
-    top_brands,
     x=top_brands.index,
     y=top_brands.values,
     labels={"x": "Brand", "y": "Count"},
     title="Top 30 Brands",
 )
-st.plotly_chart(fig2, use_container_width=True)
 
-# Top product categories
 top_products = df["dc_subject_product"].value_counts().nlargest(15)
+truncated_labels = [
+    label[:20] + "…" if len(str(label)) > 20 else label for label in top_products.index
+]
 fig3 = px.bar(
-    top_products,
-    x=top_products.index,
+    x=truncated_labels,
     y=top_products.values,
     labels={"x": "Product Category", "y": "Count"},
     title="Top 15 Product Categories",
 )
-st.plotly_chart(fig3, use_container_width=True)
 
-# Company nations
-nation_counts = df["chao_company_nation"].value_counts().nlargest(10)
+# --- Display all in one row ---
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.plotly_chart(fig1, use_container_width=True)
+with col2:
+    st.plotly_chart(fig2, use_container_width=True)
+with col3:
+    st.plotly_chart(fig3, use_container_width=True)
+
+
+# Get top 20 entries
+nation_counts = df["chao_company_nation"].value_counts().nlargest(20)
+brand_counts = df["dc_subject_brand"].value_counts().nlargest(20)
+company_names = df["chao_company_name"].value_counts().nlargest(20)
+
+# Create three pie charts
 fig4 = px.pie(
     names=nation_counts.index,
     values=nation_counts.values,
     title="Top Company Nations",
     hole=0.4,
 )
-st.plotly_chart(fig4, use_container_width=True)
+fig41 = px.pie(
+    names=brand_counts.index,
+    values=brand_counts.values,
+    title="Top Brands",
+    hole=0.4,
+)
+fig42 = px.pie(
+    names=company_names.index,
+    values=company_names.values,
+    title="Top Company Names",
+    hole=0.4,
+)
 
-# Publisher trends over years
+# Display them side by side
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.plotly_chart(fig4, use_container_width=True)
+with col2:
+    st.plotly_chart(fig41, use_container_width=True)
+with col3:
+    st.plotly_chart(fig42, use_container_width=True)
+
+import plotly.graph_objects as go
+
+# Ensure 'year' column exists
 if "year" not in df.columns:
-    df["year"] = df["dc_date_issued"].dt.year
+    df["year"] = pd.to_datetime(df["dc_date_issued"], errors="coerce").dt.year
 
+# --- Line Chart: Publisher Activity Over Time ---
 pub_years = df.groupby(["year", "publisher"]).size().reset_index(name="count")
 fig5 = px.line(
     pub_years,
@@ -268,22 +311,81 @@ fig5 = px.line(
     title="Publisher Activity Over Time",
     labels={"count": "Ad Count", "year": "Year"},
 )
-st.plotly_chart(fig5, use_container_width=True)
 
-# Ad count per issue page (grouped by issue number and page number)
-page_stats = (
-    df.groupby(["dc_citation_issuenumber", "dc_citation_pagenumber"])
-    .size()
-    .reset_index(name="count")
+# --- Sankey Chart: Nation → Brand → Product ---
+df_sankey = df.dropna(
+    subset=["chao_company_nation", "dc_subject_brand", "dc_subject_product"]
 )
-fig6 = px.box(
-    page_stats,
-    x="dc_citation_pagenumber",
-    y="count",
-    title="Distribution of Ads per Page Number",
-    labels={"dc_citation_pagenumber": "Page", "count": "Ad Count"},
+
+top_brands = df["dc_subject_brand"].value_counts().nlargest(20).index
+df_sankey = df_sankey[df_sankey["dc_subject_brand"].isin(top_brands)]
+
+sources = df_sankey["chao_company_nation"]
+brands = df_sankey["dc_subject_brand"]
+products = df_sankey["dc_subject_product"]
+
+all_labels = pd.concat([sources, brands, products]).astype(str).unique().tolist()
+
+
+def map_labels(series):
+    return series.map(lambda x: all_labels.index(str(x)))
+
+
+source_labels = map_labels(sources._append(brands))
+target_labels = map_labels(brands._append(products))
+
+fig6 = go.Figure(
+    go.Sankey(
+        node=dict(
+            pad=15,
+            thickness=20,
+            line=dict(color="black", width=0.5),
+            label=all_labels,
+            color="lightblue",
+        ),
+        link=dict(
+            source=source_labels,
+            target=target_labels,
+            value=[1] * len(source_labels),
+            color="rgba(173,216,230,0.4)",
+        ),
+    )
 )
-st.plotly_chart(fig6, use_container_width=True)
+
+fig6.update_layout(
+    title_text="Flow: Nation → Brand → Product",
+    font=dict(size=12),
+    plot_bgcolor="white",
+    paper_bgcolor="white",
+    margin=dict(l=20, r=20, t=50, b=20),
+)
+
+# --- Display side by side ---
+col1, col2 = st.columns(2)
+with col1:
+    st.plotly_chart(fig5, use_container_width=True)
+with col2:
+    st.plotly_chart(fig6, use_container_width=True)
+
+
+top_publishers = df["publisher"].value_counts().nlargest(10).index
+top_brands = df["dc_subject_brand"].value_counts().nlargest(30).index
+
+heat_df = df[
+    df["publisher"].isin(top_publishers) & df["dc_subject_brand"].isin(top_brands)
+]
+pivot = heat_df.pivot_table(
+    index="publisher", columns="dc_subject_brand", aggfunc="size", fill_value=0
+)
+
+fig_heat = px.imshow(
+    pivot,
+    labels=dict(x="Brand", y="Publisher", color="Count"),
+    title="Top Publishers vs. Top Brands",
+    text_auto=True,
+)
+st.plotly_chart(fig_heat, use_container_width=True)
+
 
 fig7 = px.treemap(
     df.dropna(subset=["dc_subject_product", "dc_subject_brand"]),
@@ -291,16 +393,17 @@ fig7 = px.treemap(
     title="Treemap of Brands within Product Categories",
 )
 st.plotly_chart(fig7, use_container_width=True)
-
+# --- Sunburst Chart ---
 fig8 = px.sunburst(
     df.dropna(subset=["chao_company_nation", "dc_subject_product", "dc_subject_brand"]),
     path=["chao_company_nation", "dc_subject_product", "dc_subject_brand"],
     title="Sunburst of Brands by Nation and Product Type",
 )
-st.plotly_chart(fig8, use_container_width=True)
 
+# --- Heatmap Data Preparation ---
 heat_df = df.copy()
-heat_df["year"] = heat_df["dc_date_issued"].dt.year
+heat_df["year"] = pd.to_datetime(heat_df["dc_date_issued"], errors="coerce").dt.year
+heat_df["dc_subject_product"] = heat_df["dc_subject_product"].astype(str).str[:50]
 heat_data = (
     heat_df.groupby(["year", "dc_subject_product"])
     .size()
@@ -315,22 +418,20 @@ fig9 = px.imshow(
     title="Heatmap of Ads by Product Type and Year",
     labels={"x": "Year", "y": "Product Type", "color": "Ad Count"},
 )
-st.plotly_chart(fig9, use_container_width=True)
 
-polar_df = (
-    df.groupby("dc_language_iso")["dc_type_genre"]
-    .value_counts()
-    .unstack(fill_value=0)
-    .reset_index()
-)
+# --- Layout with st.columns ---
+col1, col2 = st.columns(2)
+with col1:
+    st.plotly_chart(fig8, use_container_width=True)
+with col2:
+    st.plotly_chart(fig9, use_container_width=True)
 
 # Footer
-with st.expander("About this project"):
-    st.markdown(
-        """
-        **About this project**  
-        This dashboard is part of the *Positions Press* initiative and is shared under the  
-        [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).  
-        Content is made publicly accessible to support scholarly research and engagement.
-        """
-    )
+st.markdown(
+    """
+    **About this project**  
+    This dashboard is part of the *Positions Press* initiative and is shared under the  
+    [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).  
+    Content is made publicly accessible to support scholarly research and engagement.
+    """
+)
