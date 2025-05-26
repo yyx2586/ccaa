@@ -53,7 +53,7 @@ if "modal_image" not in st.session_state:
 if "modal_title" not in st.session_state:
     st.session_state.modal_title = None
 with st.container():
-    col1, col2, col3, col4 = st.columns([2, 2, 2, 2])
+    col1, col2, col3, col4 = st.columns([4, 1, 1, 1])
 
     query = col1.text_input("Search", "")
 
@@ -62,11 +62,11 @@ with st.container():
 
     # Year selectors
     start_year = col2.selectbox(
-        "Start Year", options=year_range, index=year_range.index(1901)
+        "Start Year", options=year_range, index=year_range.index(1907)
     )
 
     end_year = col3.selectbox(
-        "End Year", options=year_range, index=year_range.index(1949)
+        "End Year", options=year_range, index=year_range.index(1937)
     )
     page = col4.number_input("Page", min_value=1, value=1, step=1)
     with st.container():
@@ -134,7 +134,7 @@ with st.container():
         sort_order = col3.radio(
             "Sort by Date",
             options=["Ascending", "Descending"],
-            index=1,
+            index=0,
             horizontal=True,
         )
 
@@ -170,6 +170,7 @@ params = {
     "publisher": publisher,
     "language": language.lower(),
     "sort_order": "asc" if sort_order == "Ascending" else "desc",
+    "subject_options": selected_subjects,
 }
 if query:
     params["query"] = query
@@ -212,7 +213,6 @@ with st.spinner("Loading catalog..."):
             # ["publisher", "dc_date_issued", "dc_citation_issuenumber", "dc_title", "dc_subject_brand", "dc_subject_product", "dc_description_fulltext"]
 
             for i, item in enumerate(results):
-                print(item)
                 publisher = item.get("publisher", "").replace("\n", " ")
                 issued = parse_mongo_date(item.get("dc_date_issued", {})).replace(
                     "\n", " "
@@ -276,13 +276,38 @@ st.markdown(
 # Plotting
 st.subheader("📊 Advertisement Statistics Analysis")
 # --- Prepare data ---
+
+
+# --- Display all in one row ---
+col1, col2 = st.columns(2)
+
 if df["dc_citation_volumenumber"].notnull().any():
     fig1 = px.histogram(
-        df, x="dc_citation_volumenumber", title="Number of Advertisements per Year"
+        df,
+        x="publisher",
+        title="Number of Advertisements per Publisher",
+        labels={"publisher": "Publisher", "y": "Count"},
+        barmode="stack",  # Options: "stack", "group", "overlay"
     )
+nation_counts = df["chao_company_nation"].value_counts().nlargest(20)
+# Create three pie charts
+fig2 = px.pie(
+    names=nation_counts.index,
+    values=nation_counts.values,
+    title="Top Company Nations",
+    hole=0.4,
+)
+
+# --- Display all in one row ---
+col1, col2 = st.columns(2)
+
+with col1:
+    st.plotly_chart(fig1, use_container_width=True)
+with col2:
+    st.plotly_chart(fig2, use_container_width=True)
 
 top_brands = df["dc_subject_brand"].value_counts().nlargest(30)
-fig2 = px.bar(
+fig1 = px.bar(
     x=top_brands.index,
     y=top_brands.values,
     labels={"x": "Brand", "y": "Count"},
@@ -293,7 +318,7 @@ top_products = df["dc_subject_product"].value_counts().nlargest(15)
 truncated_labels = [
     label[:20] + "…" if len(str(label)) > 20 else label for label in top_products.index
 ]
-fig3 = px.bar(
+fig2 = px.bar(
     x=truncated_labels,
     y=top_products.values,
     labels={"x": "Product Category", "y": "Count"},
@@ -301,35 +326,25 @@ fig3 = px.bar(
 )
 
 # --- Display all in one row ---
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 with col1:
     st.plotly_chart(fig1, use_container_width=True)
 with col2:
     st.plotly_chart(fig2, use_container_width=True)
-with col3:
-    st.plotly_chart(fig3, use_container_width=True)
 
 
 # Get top 20 entries
-nation_counts = df["chao_company_nation"].value_counts().nlargest(20)
 brand_counts = df["dc_subject_brand"].value_counts().nlargest(20)
 company_names = df["chao_company_name"].value_counts().nlargest(20)
 
-# Create three pie charts
-fig4 = px.pie(
-    names=nation_counts.index,
-    values=nation_counts.values,
-    title="Top Company Nations",
-    hole=0.4,
-)
-fig41 = px.pie(
+fig1 = px.pie(
     names=brand_counts.index,
     values=brand_counts.values,
     title="Top Brands",
     hole=0.4,
 )
-fig42 = px.pie(
+fig2 = px.pie(
     names=company_names.index,
     values=company_names.values,
     title="Top Company Names",
@@ -337,13 +352,11 @@ fig42 = px.pie(
 )
 
 # Display them side by side
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 with col1:
-    st.plotly_chart(fig4, use_container_width=True)
+    st.plotly_chart(fig1, use_container_width=True)
 with col2:
-    st.plotly_chart(fig41, use_container_width=True)
-with col3:
-    st.plotly_chart(fig42, use_container_width=True)
+    st.plotly_chart(fig2, use_container_width=True)
 
 import plotly.graph_objects as go
 
@@ -354,13 +367,13 @@ pub_years = (
     .size()
     .reset_index(name="count")
 )
-fig5 = px.line(
+fig5 = px.scatter(
     pub_years,
-    x="year",
+    x="dc_citation_volumenumber",
     y="count",
     color="publisher",
     title="Publisher Activity Over Time",
-    labels={"count": "Ad Count", "year": "Year"},
+    labels={"count": "Ad Count", "dc_citation_volumenumber": "Year"},
 )
 
 # --- Sankey Chart: Nation → Brand → Product ---
@@ -454,7 +467,7 @@ fig8 = px.sunburst(
 # --- Heatmap Data Preparation ---
 heat_df = df.copy()
 heat_df["year"] = pd.to_datetime(heat_df["dc_date_issued"], errors="coerce").dt.year
-heat_df["dc_subject_product"] = heat_df["dc_subject_product"].astype(str).str[:50]
+heat_df["dc_subject_product"] = heat_df["dc_subject_product"].astype(str).str[:100]
 heat_data = (
     heat_df.groupby(["year", "dc_subject_product"])
     .size()
