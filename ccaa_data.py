@@ -57,34 +57,90 @@ with st.container():
 
     query = col1.text_input("Search", "")
 
-    start_date = col2.date_input(
-        "Start Date",
-        datetime.date(1907, 3, 9),
-        min_value=datetime.date(1901, 1, 1),
-        max_value=datetime.date(1940, 12, 31),
+    # Define year range
+    year_range = list(range(1901, 1949 + 1))
+
+    # Year selectors
+    start_year = col2.selectbox(
+        "Start Year", options=year_range, index=year_range.index(1901)
     )
 
-    end_date = col3.date_input(
-        "End Date",
-        datetime.date(1938, 12, 31),
-        min_value=datetime.date(1901, 1, 1),
-        max_value=datetime.date(1940, 12, 31),
+    end_year = col3.selectbox(
+        "End Year", options=year_range, index=year_range.index(1949)
     )
-
     page = col4.number_input("Page", min_value=1, value=1, step=1)
+    with st.container():
+        col1, col2, col3, col4 = st.columns([2.5, 4, 2, 2])
 
-    publisher = st.selectbox(
-        "Select Publisher (optional)",
-        options=[
-            "",
-            "Ta Kung Pao [大公报]",
-            "Press of Hankow Times [汉口中西报社]",
-            "Press of Sheng-ching Shih-pao [盛京时报社]",
-            "Press of Yuet Wa Po [越华报社]",
-        ],
-        index=0,
-        help="Filter by specific newspaper publisher",
-    )
+        publisher = col1.selectbox(
+            "Select Publisher (optional)",
+            options=[
+                "",
+                "Ta Kung Pao [大公报]",
+                "Press of Hankow Times [汉口中西报社]",
+                "Press of Sheng-ching Shih-pao [盛京时报社]",
+                "Press of Yuet Wa Po [越华报社]",
+                "Press of Shen Bao [申報]",
+            ],
+            index=0,
+            help="Filter by specific newspaper publisher",
+        )
+        # New UI components
+        subject_options = [
+            "Pharmaceutical products[藥品]",
+            "Tobacco products[煙草製品]",
+            "Soap, cleaning preparations, perfumes and toilet preparations[日化用品]",
+            "Food products n.e.c.[食品]",
+            "Other dairy products[乳製品]",
+            "Motor vehicles, trailers and semi-trailers; parts and accessories thereof[機械車]",
+            "Glass and glass products[玻璃製品]",
+            "Beverages[飲品]",
+            "Fertilizers and pesticides[化肥及殺蟲劑]",
+            "Radio and Television or Sound Equipment[音響設備]",
+            "Accumulators, primary cells and primary batteries, and parts thereof[蓄電池]",
+            "Furniture; Other manufactured articles n.e.c.[傢俱及其它製成品]",
+            "Photographic equipment[攝影器材]",
+            "Optical instruments and photographic equipment, and parts and accessories thereof[光學儀器]",
+            "Grain mill products[穀物研磨品]",
+            "Daily Necessities[日用品]",
+            "Insurance and pension services[保險和養老金服務]",
+            "Consumables[耗材]",
+            "Engines and turbines and parts thereof[發動機及其配件]",
+            "Office and accounting machinery, and parts and accessories thereof[辦公設備及其部件]",
+            "Radio, television and communication equipment and apparatus[廣播電視通訊設備及部件]",
+            "Domestic appliances and parts thereof[家用設備]",
+            "Watches and clocks, and parts thereof[鐘錶及其部件]",
+            "Chemical products n.e.c.[化工產品]",
+            "Rubber tyres and tubes[橡膠輪胎及橡膠管]",
+            "Petroleum Products[原油及提煉油]",
+            "Machinery for textile, apparel and leather production, and parts thereof[布料皮革製品機器及其配件]",
+            "Cocoa, chocolate and sugar confectionery[糖果]",
+            "Textiles n.e.c.[織物]",
+            "Musical instruments[樂器]",
+            "Other transport equipment and parts thereof[其它運輸工具及其配件]",
+            "Medical Devices[医疗器械]",
+            "other manufactured articles n.e.c(其他工業製品)",
+            "Woven fabrics (except special fabrics) of natural fibres other than cotton[紡織品]",
+            "sports goods[體育用品]",
+            "Trademark[商標]",
+            "Construction[建築工程]",
+            "Clothing[服飾]",
+            "Materia[原料]/Consumables[耗材]",
+        ]
+        selected_subjects = col2.multiselect(
+            "Select Subjects (optional)", subject_options
+        )
+
+        sort_order = col3.radio(
+            "Sort by Date",
+            options=["Ascending", "Descending"],
+            index=1,
+            horizontal=True,
+        )
+
+        language = col4.radio(
+            "Language", options=["English", "Chinese"], index=0, horizontal=True
+        )
 
 
 def parse_mongo_date(obj):
@@ -108,10 +164,12 @@ def limit_words(text, limit=100):
 
 # --- Fetch Catalog Page
 params = {
-    "start_date": start_date.isoformat(),
-    "end_date": end_date.isoformat(),
+    "start_year": start_year,
+    "end_year": end_year,
     "page": page,
     "publisher": publisher,
+    "language": language.lower(),
+    "sort_order": "asc" if sort_order == "Ascending" else "desc",
 }
 if query:
     params["query"] = query
@@ -141,11 +199,8 @@ with st.spinner("Loading catalog..."):
             <tr style="background-color: #f2f2f2;">
             <th style="padding: 8px; border: 1px solid #ccc;">Thumbnail</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Publisher</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Date</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Title</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Nation</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Company</th>
-            <th style="padding: 8px; border: 1px solid #ccc;">Brand</th>
+            <th style="padding: 8px; border: 1px solid #ccc;">Year</th>
+            <th style="padding: 8px; border: 1px solid #ccc;">Issue #</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Product</th>
             <th style="padding: 8px; border: 1px solid #ccc;">Text Preview</th>
             </tr>
@@ -157,19 +212,16 @@ with st.spinner("Loading catalog..."):
             # ["publisher", "dc_date_issued", "dc_citation_issuenumber", "dc_title", "dc_subject_brand", "dc_subject_product", "dc_description_fulltext"]
 
             for i, item in enumerate(results):
+                print(item)
                 publisher = item.get("publisher", "").replace("\n", " ")
                 issued = parse_mongo_date(item.get("dc_date_issued", {})).replace(
                     "\n", " "
                 )
-                issued_vol = parse_mongo_date(
-                    item.get("dc_citation_issuenumber", {})
-                ).replace("\n", " ")
+                year = int(item.get("dc_citation_volumenumber", {}))
+                issued_vol = item.get("dc_citation_issuenumber", {})
                 title = item.get("dc_title", "").replace("\n", " ")
-                brand = item.get("dc_subject_brand", "").replace("\n", " ")
                 product = item.get("dc_subject_product", "").replace("\n", " ")
-                full_text = item.get("dc_description_fulltext", "").replace("\n", " ")
-                nation = item.get("chao_company_nation", "").replace("\n", " ")
-                company = item.get("chao_company_name", "").replace("\n", " ")
+                full_text = item.get("full_text", "").replace("\n", " ")
                 thumb_b64 = item.get("thumbnail_base64", "")
                 s3_url = item.get("s3_url_img", "")
 
@@ -188,11 +240,8 @@ with st.spinner("Loading catalog..."):
             <tr>
             <td style="padding: 8px; border: 1px solid #ccc;">{img_tag}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">{publisher}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{issued}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{title}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{nation}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{company}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">{brand}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{year}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">{issued_vol}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">{product}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">
             <details>
@@ -227,9 +276,10 @@ st.markdown(
 # Plotting
 st.subheader("📊 Advertisement Statistics Analysis")
 # --- Prepare data ---
-if df["dc_date_issued"].notnull().any():
-    df["year"] = pd.to_datetime(df["dc_date_issued"], errors="coerce").dt.year
-    fig1 = px.histogram(df, x="year", title="Number of Advertisements per Year")
+if df["dc_citation_volumenumber"].notnull().any():
+    fig1 = px.histogram(
+        df, x="dc_citation_volumenumber", title="Number of Advertisements per Year"
+    )
 
 top_brands = df["dc_subject_brand"].value_counts().nlargest(30)
 fig2 = px.bar(
@@ -298,11 +348,12 @@ with col3:
 import plotly.graph_objects as go
 
 # Ensure 'year' column exists
-if "year" not in df.columns:
-    df["year"] = pd.to_datetime(df["dc_date_issued"], errors="coerce").dt.year
-
 # --- Line Chart: Publisher Activity Over Time ---
-pub_years = df.groupby(["year", "publisher"]).size().reset_index(name="count")
+pub_years = (
+    df.groupby(["dc_citation_volumenumber", "publisher"])
+    .size()
+    .reset_index(name="count")
+)
 fig5 = px.line(
     pub_years,
     x="year",
