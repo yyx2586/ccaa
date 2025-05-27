@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Chinese Commercial Advertisement Archive User Manual</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="chinese-commercial-advertisement-archive-user-manual">Chinese Commercial Advertisement Archive User Manual</h1>
+<h2 id="getting-started-with-the-archive-interface">Getting Started with the Archive Interface</h2>
+<p>🚀 <strong>Launch the Archive Here</strong>:</p>
+<p>🌐 <a href="https://ccaa-data-server.streamlit.app/"><strong>Chinese Commercial Advertisement Archive</strong></a></p>
+<p>🕰️ <em>Note</em>: The server may take a moment to wake up if it hasn’t been accessed recently. Don't worry—it’s just stretching and getting ready for you!</p>
+<p>If the link doesn't load after a couple of minutes, feel free to contact the archive team:
+📬 <strong><a href="mailto:positionspress@gmail.com">positionspress@gmail.com</a></strong></p>
+<p>For a detailed technical overview, please refer to the [<strong>Technical Report</strong>](</p>
+<p>)</p>
+<h2 id="1-introduction-to-the-archive-access">1. Introduction to the Archive Access</h2>
+<h3 id="11-accessing-the-archive">1.1 Accessing the Archive</h3>
+<p>The Chinese Commercial Advertisement Archive (CCAA) is accessible through a web-based interface. The archive contains 108,244 historical advertisement images from Chinese newspapers (1901-1938), with 44,700 fully cataloged entries.</p>
+<p align="center"> <img src="https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/report/user_interface.png" alt="TensorBoard Embedding Projector Demo" width="800"> </p>
+<h3 id="12-interface-overview">1.2 Interface Overview</h3>
+<p>The archive interface consists of several key components:</p>
+<ul>
+<li>Search bar for keyword queries</li>
+<li>Filter options for refining results</li>
+<li>Results display area with thumbnail previews</li>
+<li>Individual advertisement viewing upon clicking thumbnails to be redirected to a detailed view</li>
+</ul>
+<h2 id="2-search-and-navigation">2. Search and Navigation</h2>
+<h3 id="21-basic-search">2.1 Basic Search</h3>
+<p align="center"> <img src="https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/report/search.gif" alt="TensorBoard Embedding Projector Demo" width="800"> </p>
+<p>Enter on full text indices on all text field in the main search bar to search across all indexed advertisement content. The search function queries:</p>
+<ul>
+<li>Advertisement content</li>
+<li>Product descriptions</li>
+<li>Company names</li>
+<li>Brand names</li>
+</ul>
+<h3 id="22-advanced-filtering-options">2.2 Advanced Filtering Options</h3>
+<p align="center"> <img src="https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/report/filter.gif" alt="TensorBoard Embedding Projector Demo" width="800"> </p>
+<h4 id="221-date-range-selection">2.2.1 Date Range Selection</h4>
+<ul>
+<li><strong>Start Year</strong>: Select from dropdown menu (1901-1949)</li>
+<li><strong>End Year</strong>: Select from dropdown menu (1901-1949)</li>
+<li>Default setting displays all available years</li>
+</ul>
+<h4 id="222-publisher-selection">2.2.2 Publisher Selection</h4>
+<p>Available publishers include:</p>
+<ul>
+<li>Ta Kung Pao [大公報]</li>
+<li>Press of Hankow Times [漢口中西報社]</li>
+<li>Press of Sheng-ching Shih-pao [盛京時報社]</li>
+<li>Press of Yuet Wa Po [越華報社]</li>
+<li>Press of Shen Bao [申報]</li>
+</ul>
+<h4 id="223-subject-categories">2.2.3 Subject Categories</h4>
+<p>Select from predefined product categories to narrow results by advertisement type.</p>
+<h3 id="23-results-management">2.3 Results Management</h3>
+<h4 id="231-sorting-options">2.3.1 Sorting Options</h4>
+<ul>
+<li><strong>Ascending</strong>: Oldest advertisements first</li>
+<li><strong>Descending</strong>: Newest advertisements first</li>
+</ul>
+<h4 id="232-language-toggle">2.3.2 Language Toggle</h4>
+<ul>
+<li><strong>English</strong>: Interface and metadata in English</li>
+<li><strong>Chinese</strong>: Interface and metadata in Chinese</li>
+</ul>
+<h4 id="233-pagination">2.3.3 Pagination</h4>
+<ul>
+<li>Results display 20 items per page</li>
+<li>Navigate using page numbers at bottom</li>
+<li>Total result count shown above listings</li>
+</ul>
+<h2 id="3-viewing-advertisement-details">3. Viewing Advertisement Details</h2>
+<h3 id="31-search-results-display">3.1 Search Results Display</h3>
+<p>Each result shows:</p>
+<ul>
+<li><strong>Thumbnail</strong>: Small preview image</li>
+<li><strong>Publisher</strong>: Newspaper source</li>
+<li><strong>Year</strong>: Publication year</li>
+<li><strong>Issue #</strong>: Specific issue number</li>
+<li><strong>Product</strong>: Product category classification</li>
+<li><strong>Text Preview</strong>: Expandable content preview</li>
+</ul>
+<h3 id="32-image-viewing-options">3.2 Image Viewing Options</h3>
+<p>Three image types are available for each advertisement:</p>
+<h4 id="321-cropped-advertisement-by-clicking-on-the-thumbnail-imagejpg">3.2.1 Cropped Advertisement by clicking on the thumbnail (image.jpg)</h4>
+<ul>
+<li>High-resolution image of individual advertisement</li>
+<li>Suitable for detailed content analysis</li>
+<li>Primary research object</li>
+</ul>
+<h4 id="322-thumbnail-view-image_thumbnailjpg">3.2.2 Thumbnail View (image_thumbnail.jpg)</h4>
+<ul>
+<li>Reduced resolution for quick browsing</li>
+<li>Available for subset of captioned materials</li>
+<li>Useful for initial assessment</li>
+</ul>
+<h2 id="4-understanding-the-data">4. Understanding the Data</h2>
+<h3 id="41-archive-composition">4.1 Archive Composition</h3>
+<p>The CCAA contains three collection levels. The primary collection consists of fully captioned advertisements, while the secondary collection contains cropped images without (this is not currently searchable) metadata. The tertiary collection includes early period advertisements from the Shen Bao newspaper. The tertiary collection is auto-captioned with Claude 3.5 Sonnet V2 model, but not fully cataloged.</p>
+<table>
+<thead>
+<tr>
+<th>Collection Type</th>
+<th>Image Count</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary (Captioned)</td>
+<td>44,700</td>
+<td>Fully cataloged with metadata</td>
+</tr>
+<tr>
+<td>Secondary (Uncaptioned)</td>
+<td>63,544</td>
+<td>Cropped images without metadata</td>
+</tr>
+<tr>
+<td>Tertiary (Shen Bao)</td>
+<td>2,924</td>
+<td>Early period (1901-1907) supplement</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-publisher-distribution">4.2 Publisher Distribution</h3>
+<p>Captioned advertisements by publisher:</p>
+<table>
+<thead>
+<tr>
+<th>Publisher</th>
+<th>Count</th>
+<th>Percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Press of Hankow Times</td>
+<td>15,221</td>
+<td>37.0%</td>
+</tr>
+<tr>
+<td>Press of Sheng-ching Shih-pao</td>
+<td>13,488</td>
+<td>32.8%</td>
+</tr>
+<tr>
+<td>Ta Kung Pao</td>
+<td>6,263</td>
+<td>15.2%</td>
+</tr>
+<tr>
+<td>Press of Yuet Wa Po</td>
+<td>3,488</td>
+<td>8.5%</td>
+</tr>
+<tr>
+<td>Press of Shen Bao</td>
+<td>2,914</td>
+<td>7.1%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-data-visualizations-guide">5. Data Visualizations Guide</h2>
+<h3 id="51-publisher-advertisement-volume-and-company-nations">5.1 Publisher Advertisement Volume and Company Nations</h3>
+<p align="center"> <img src="https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/report/publisher_and_country.png" alt="TensorBoard Embedding Projector Demo" width="800"> </p>
+<p>The combined visualization demonstrates:</p>
+<p><strong>Publisher Advertisement Volumes</strong>:</p>
+<ul>
+<li><strong>Press of Hankow Times</strong>: ~15,000 advertisements (highest volume)</li>
+<li><strong>Press of Sheng-ching Shih-pao</strong>: ~13,500 advertisements</li>
+<li><strong>Ta Kung Pao</strong>: ~6,500 advertisements</li>
+<li><strong>Press of Yuet Wa Po</strong>: ~3,500 advertisements</li>
+<li><strong>Press of Shen Bao</strong>: ~3,000 advertisements</li>
+</ul>
+<p><strong>Company Nation Distribution</strong>:</p>
+<ul>
+<li><strong>Japan</strong>: 43.1% - Dominant foreign advertiser reflecting strong economic presence</li>
+<li><strong>Canada</strong>: 19.7% - Significant pharmaceutical sector representation</li>
+<li><strong>U.S.A</strong>: 16.2% - Diverse product portfolio including tobacco and consumer goods</li>
+<li><strong>U.K</strong>: 14.3% - Traditional colonial commercial presence</li>
+<li><strong>Germany</strong>: 3.5% - Specialized pharmaceutical and chemical products</li>
+<li><strong>Other nations</strong>: &lt;1% each (Switzerland, France, Netherlands, Singapore, India, Russia, Italy)</li>
+</ul>
+<h3 id="52-brand-and-category-distribution">5.2 Brand and Category Distribution</h3>
+<p align="center"> <img src="https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/report/brand_and_category.png" alt="TensorBoard Embedding Projector Demo" width="800"> </p>
+<p>Distribution analyses reveal:</p>
+<ul>
+<li><strong>Top Product Categories</strong>: Pharmaceuticals (&gt;50%), Tobacco (~15%), Food (~10%)</li>
+<li><strong>Leading Companies</strong>: Dr. Williams Medicine Company (34.6% of pharmaceutical ads)</li>
+<li><strong>Geographic Concentration</strong>: Treaty ports dominate advertising activity</li>
+</ul>
+<p>Key insights:</p>
+<ul>
+<li>Pharmaceutical products dominate the archive</li>
+<li>Jintan (仁丹) is the most frequently advertised brand (13.3%)</li>
+<li>Top 10 brands account for ~60% of advertisements</li>
+</ul>
+<h3 id="53-top-brands-and-company-analysis">5.3 Top Brands and Company Analysis</h3>
+<p align="center"> <img src="https://ccaa-public-us-east-1-504133794192.s3.us-east-1.amazonaws.com/report/brand_and_company.png" alt="TensorBoard Embedding Projector Demo" width="800"> </p>
+<p>The dual pie chart visualization reveals market concentration patterns:</p>
+<p><strong>Top Brand Distribution</strong>:</p>
+<ul>
+<li><strong>仁丹 (Jintan)</strong>: 13.3% - Japanese pharmaceutical product dominating the market</li>
+<li><strong>嬰孩自己藥片 (Baby's Own)</strong>: 7.93% - Canadian infant medicine brand</li>
+<li><strong>如意膏 (She-Ko)</strong>: 7.84% - Popular ointment product</li>
+<li><strong>味之素 (Ajinomoto)</strong>: 7.6% - Japanese food seasoning company</li>
+<li><strong>紅錫包香煙 (Ruby Queen)</strong>: 6.51% - Cigarette brand</li>
+<li><strong>韋廉士吸入止咳片</strong>: 5.62% - Williams' cough remedy products</li>
+<li><strong>中將湯 (Chujoto)</strong>: 5.06% - Traditional medicine formula</li>
+<li><strong>韋廉士醫生紅色清導丸 (Pinkettes)</strong>: 5.02% - Williams' laxative product</li>
+<li><strong>Other brands</strong>: Including various Williams' products and Three Castles Cigarettes</li>
+</ul>
+<p><strong>Top Company Distribution</strong>:</p>
+<ul>
+<li><strong>韋廉士醫生藥局 (Dr. Williams Medicine Company)</strong>: 34.6% - Overwhelming market leader</li>
+<li><strong>森下博大藥房 (Morishita &amp;Co.)</strong>: 9.47% - Major Japanese pharmaceutical company</li>
+<li><strong>惠爾斯公司 (W.D. &amp; H.O. Wills)</strong>: 7.73% - British tobacco company</li>
+<li><strong>第威德制藥公司 (E.G. DeWitt &amp; CO.)</strong>: 6.4% - American pharmaceutical firm</li>
+<li><strong>佛安氏西藥公司 (Foster-MacLellan Co.)</strong>: 5.68% - Western medicine distributor</li>
+<li><strong>S.Suzuki &amp; Co.</strong>: 5.61% - Japanese trading company</li>
+<li><strong>英美煙公司 (British American Tobacco)</strong>: 5.22% - Major tobacco conglomerate</li>
+<li><strong>Other companies</strong>: Including various pharmaceutical and trading firms</li>
+</ul>
+<h2 id="7-technical-guidelines">7. Technical Guidelines</h2>
+<h3 id="71-data-access-methods">7.1 Data Access Methods</h3>
+<p>Current access options:</p>
+<ul>
+<li>Individual image downloading via web interface</li>
+<li>Manual metadata compilation from search results</li>
+<li>No bulk download functionality available on the website, but can be requested for research purposes</li>
+</ul>
+<h3 id="72-citation-format">7.2 Citation Format</h3>
+<p>Recommended citation:</p>
+<pre><code>[Advertisement Title]. (Year). In Chinese Commercial Advertisement Archive, 
+[Newspaper Name], [Date], [Page Number]. Ephemera Project, Positions.Press. 
+Retrieved [Access Date] from [URL]
+</code></pre>
+<h2 id="8-research-best-practices">8. Research Best Practices</h2>
+<h3 id="81-systematic-documentation">8.1 Systematic Documentation</h3>
+<ul>
+<li>Record all search parameters used</li>
+<li>Document date ranges and filters applied</li>
+<li>Note total results for each query</li>
+<li>Save URLs for specific advertisements</li>
+</ul>
+<h3 id="82-copyright-and-usage">8.2 Copyright and Usage</h3>
+<ul>
+<li>Historical materials for research/educational use</li>
+<li>No commercial reproduction without permission</li>
+<li>Attribute the archive in all publications</li>
+<li>Respect cultural sensitivities in historical materials</li>
+</ul>
+<h2 id="9-bulk-download-and-technical-support">9. Bulk Download and Technical Support</h2>
+<p>The current archive does not support bulk downloading of images or metadata. Users must download individual images through the web interface. If you require bulk data access for research purposes, please contact the archive administrators.
+For further technical support or research inquiries along with bulk data requests, please reach out via email.
+Email: <a href="mailto:positionspress@gmail.com">positionspress@gmail.com</a></p>
+
+            
+            
+        </body>
+        </html>
