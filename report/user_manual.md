@@ -11,9 +11,7 @@
 If the link doesn't load after a couple of minutes, feel free to contact the archive team:
 📬 **[positionspress@gmail.com](mailto:positionspress@gmail.com)**
 
-For a detailed technical overview, please refer to the [**Technical Report**](
-
-)
+For a detailed technical overview, please refer to the [**Technical Report**](https://github.com/yyx2586/ccaa/blob/main/report/technical_report.md)
 
 ## 1. Introduction to the Archive Access
 
